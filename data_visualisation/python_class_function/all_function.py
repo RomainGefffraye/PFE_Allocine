@@ -78,10 +78,13 @@ def getListOfGenre(data):
 
 
 def getMovieDistributionDistributorYear(data):
-    movieDistribution = defaultdict(lambda: defaultdict(lambda: 0))
+    movieDistribution = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0)))
     for movie in data:
-        if data[movie]["distributor"] is not None:
-            movieDistribution[data[movie]["distributor"]][data[movie]["production_year"]] += 1
+        if len(data[movie]["genres"]) > 0:
+            genre = data[movie]["genres"][0]
+            distributor = data[movie]["distributor"]
+            year = data[movie]["production_year"]
+            movieDistribution[genre][distributor][year] += 1
     return movieDistribution
 
 
@@ -105,7 +108,7 @@ def getMoviesPerProductor(data):
             for year in listOfYear:
                 yearDistribution = {}
                 yearDistribution["name"] = year
-                yearDistribution["size"] = distribution[company][year]
+                yearDistribution["size"] = distribution[genre][company][year]
                 if distribution[company][year] > 0:
                     companyDistribution["children"].append(yearDistribution)
             genreDistribution["children"].append(companyDistribution)
