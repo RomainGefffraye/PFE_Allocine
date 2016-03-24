@@ -1,4 +1,5 @@
 import json, io, os
+from collections import defaultdict
 from all_class import *
 
 def listdir_nohidden(path):
@@ -41,3 +42,72 @@ def generate_data_d3(chart_name, chart_data):
         js_file.write(u"var movies_per_years_per_distributor = ")
         output = json.dumps(chart_data, ensure_ascii=False, encoding='utf8')
         js_file.write(unicode(output))
+
+def getMovieDistributionDistributor(data):
+    movieDistribution = defaultdict(lambda: 0)
+    for movie in data:
+        if data[movie]["distributor"] is not None:
+            movieDistribution[data[movie]["distributor"]] += 1
+    return movieDistribution
+
+def getListOfCompany(data):
+    listOfCompany = []
+    distribution = getMovieDistributionDistributor(data)
+    for movie in data:
+        distributor = data[movie]["distributor"]
+        if distributor not in listOfCompany:
+            if distribution[distributor] > 100:
+                listOfCompany.append(distributor)
+    return listOfCompany
+
+def getListOfYear(data):
+    listOfYear = []
+    for movie in data:
+        if data[movie]["production_year"] not in listOfYear:
+            listOfYear.append(data[movie]["production_year"])
+    return listOfYear
+
+
+def getListOfGenre(data):
+    listOfGenre = []
+    for movie in data:
+        for genre in data[movie]["genres"]:
+            if genre not in listOfGenre:
+                listOfGenre.append(genre)
+    return listOfGenre
+
+
+def getMovieDistributionDistributorYear(data):
+    movieDistribution = defaultdict(lambda: defaultdict(lambda: 0))
+    for movie in data:
+        if data[movie]["distributor"] is not None:
+            movieDistribution[data[movie]["distributor"]][data[movie]["production_year"]] += 1
+    return movieDistribution
+
+
+
+def getMoviesPerProductor(data):
+    children = []
+    movie = {"name": "movie", "children": children}
+    #print(data["Zero"].keys())
+    listOfCompany = getListOfCompany(data)
+    listOfYear = getListOfYear(data)
+    listOfGenre = getListOfGenre(data)[:17] #Need to fix the bug where there's actor inside "genres"
+    distribution = getMovieDistributionDistributorYear(data)
+    for genre in listOfGenre:
+        genreDistribution = {}
+        genreDistribution["name"] = genre
+        genreDistribution["children"] = []
+        for company in listOfCompany:
+            companyDistribution = {}
+            companyDistribution["name"] = company
+            companyDistribution["children"] = []
+            for year in listOfYear:
+                yearDistribution = {}
+                yearDistribution["name"] = year
+                yearDistribution["size"] = distribution[company][year]
+                if distribution[company][year] > 0:
+                    companyDistribution["children"].append(yearDistribution)
+            genreDistribution["children"].append(companyDistribution)
+        children.append(genreDistribution)
+    return(movie)
