@@ -48,7 +48,7 @@ class Movie:
         technical_info = movie_html.findAll("div", { "class" : "item"})
         production_year = filter((lambda x: x.find("span", { "class" : "what light"}).text == "Année de production".decode('UTF-8')), technical_info)
         if production_year:
-            return production_year[0].find("span", {"class" : "that"}).text.strip()
+            return int(production_year[0].find("span", {"class" : "that"}).text.strip())
         else:
             return None
 
@@ -70,10 +70,12 @@ class Movie:
 
     def get_rate(self, movie_html, entity):
         all_rates = movie_html.findAll("div", { "class" : "rating-item"})[:-1]
-        rate_value = filter((lambda x: x.find("span" ,{"class" : "rating-title blue-link"}) != None), all_rates)
-        rate = filter((lambda x: x.find("span" ,{"class" : "rating-title blue-link"})['title'] == entity), rate_value)
-        if rate:
-            return float(rate[0].find("span", {"class" : "stareval-note"}).text.replace(',', '.'))
+        rate_string = None
+        for rate in all_rates:
+            if entity[:4].lower() in rate.find("span", {"class" : "rating-title"}).text.strip().lower():
+                rate_string = rate.find("span", {"class" : "stareval-note"}).text
+        if rate_string and rate_string != "?":
+            return float(rate_string.replace(',', '.'))
         else:
             return None
 
@@ -86,26 +88,34 @@ class Movie:
 
     def get_realisator(self, general_info):
         informations = general_info.findAll("div", {"class" : "meta-body-item"})
-        list_of_realisator_link = informations[1].findAll("span", {"itemprop" : "name"})
-        if list_of_realisator_link:
-            return [realisator.text for realisator in list_of_realisator_link]
+        for information in informations:
+            realisator_category = information.find("span", {"class" : "light"})
+            if "de" in realisator_category.text.lower():
+                realisators = information.findAll("span", {"itemprop" : "name"})
+        if realisators:
+            return [realisator.text for realisator in realisators]
         else:
             return None
 
     def get_actors(self, general_info):
         informations = general_info.findAll("div", {"class" : "meta-body-item"})
-        list_of_actor_link = informations[2].findAll("span", {"class" : "blue-link"})
-        if list_of_actor_link:
-            return [actor.text for actor in list_of_actor_link[:-1]]
+        for information in informations:
+            actors_category = information.find("span", {"class" : "light"})
+            if "avec" in actors_category.text.lower():
+                actors = information.findAll("span", {"class" : "blue-link"})
+        if actors:
+            return [actor.text.strip() for actor in actors[:-1]]
         else:
             return None
 
     def get_genres(self, general_info):
         informations = general_info.findAll("div", {"class" : "meta-body-item"})
-        list_of_genre = informations[3].findAll("span", {"class" : "blue-link"})
-        return [genre.text for genre in list_of_genre]
-        if list_of_genre:
-            return [genre.text for genre in list_of_genre]
+        for information in informations:
+            genre_category = information.find("span", {"class" : "light"})
+            if "genre" in genre_category.text.lower():
+                genres = information.findAll("span", {"itemprop" : "genre"})
+        if genres:
+            return [genre.text for genre in genres]
         else:
             return None
 
@@ -142,43 +152,72 @@ class Movie:
         print "Note presse: ", self.critic_rate
         print "Lien: ", self.url
 
-
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1'
-}
-"""url = "http://www.allocine.fr/film/fichefilm_gen_cfilm=223207.html"
-page = requests.get(url, headers=headers)
-page_content = BeautifulSoup(page.content, 'html.parser')
-movie = Movie(page_content, url)
-movie.display()
-data = movie.to_json({})
-with open("test.json", 'w+') as my_test:
-    json.dump(data, my_test)
-url = "http://www.allocine.fr/film/fichefilm_gen_cfilm=215143.html"
-page = requests.get(url, headers=headers)
-page_content = BeautifulSoup(page.content, 'html.parser')
-movie = Movie(page_content, url)
-movie.display()
-data = movie.to_json(data)"""
-
-
-movies_files = sorted(os.listdir(os.getcwd()+"/data/movies_url"))
-for movies in movies_files:
+def crawl_from_save(movies_category):
+    f = open("urls/progress/last_crawled", "r")
+    last_url_crawled = f.readline()
+    f.close()
     data_json = {}
-    with open("urls/movies/" + movies) as movies_url:
+    with open("urls/movies/" + movies_category) as movies_url:
         for movie in movies_url:
+            while last_url_crawled.split() != movie.split():
+                pass
+        line_number = 0
+        part_number = 0
+        for movie in movies_url:
+            line_number += 1
+            if line_number % 5000 == 0:
+                part_number += 1
+                with open("data/movies_json/" + movies_category + "_" + part_number + ".json", 'w+') as data:
+                    json.dump(data_json, data)
+                with open("urls/progress/last_crawled", 'w+') as save:
+                    write(movie, save)
+                data_json = {}
             print movie[:-1]
-            time.sleep(3)
             page = requests.get(movie, headers=headers)
-            print page.status_code
             if page.status_code == 200:
                 page_content = BeautifulSoup(page.content, 'html.parser')
                 movie_crawled = Movie(page_content, movie[:-1])
                 data_json = movie_crawled.to_json(data_json)
             else:
                 print movie[:-1], page.status_code
-    with open("data/movies_json/" + movies, 'w+') as my_test:
+    with open("data/movies_json/" + movies_category + ".json", 'w+') as my_test:
         json.dump(data_json, my_test)
-    with open("urls/progress/last_crawled", "w") as save:
-        save.write(movies)
+
+
+def crawl(movies_category):
+    data_json = {}
+    with open("urls/movies/" + movies_category) as movies_url:
+        line_number = 0
+        part_number = 0
+        for movie in movies_url:
+            line_number += 1
+            if line_number % 5000 == 0:
+                part_number += 1
+                with open("data/movies_json/" + movies_category + "_" + part_number + ".json", 'w+') as data:
+                    json.dump(data_json, data)
+                with open("urls/progress/last_crawled", 'w+') as save:
+                    write(movie, save)
+                data_json = {}
+            print movie[:-1]
+            page = requests.get(movie, headers=headers)
+            if page.status_code == 200:
+                page_content = BeautifulSoup(page.content, 'html.parser')
+                movie_crawled = Movie(page_content, movie[:-1])
+                data_json = movie_crawled.to_json(data_json)
+            else:
+                print movie[:-1], page.status_code
+    with open("data/movies_json/" + movies_category + ".json", 'w+') as my_test:
+        json.dump(data_json, my_test)
+
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1'
+}
+
+category_file = sorted(os.listdir(os.getcwd()+"/data/movies_url"))
+for movies_category in category_file:
+    if os.path.exists(os.getcwd()+"/urls/progress/last_crawled"):
+        crawl_from_save(movies_category)
+    else:
+        crawl(movies_category)
+    os.remove(os.getcwd() + "/urls/progress/last_crawled")
