@@ -46,9 +46,10 @@ class Movie:
 
     def get_production_year(self, movie_html):
         technical_info = movie_html.findAll("div", { "class" : "item"})
-        production_year = filter((lambda x: x.find("span", { "class" : "what light"}).text == "Année de production".decode('UTF-8')), technical_info)
+        production_year_tag = filter((lambda x: x.find("span", { "class" : "what light"}).text == "Année de production".decode('UTF-8')), technical_info)
+        production_year = production_year_tag[0].find("span", {"class" : "that"}).text.strip()
         if production_year:
-            return int(production_year[0].find("span", {"class" : "that"}).text.strip())
+            return int(production_year)
         else:
             return None
 
@@ -152,6 +153,7 @@ class Movie:
         print "Note presse: ", self.critic_rate
         print "Lien: ", self.url
 
+        
 def crawl_from_save(movies_category):
     f = open("urls/progress/last_crawled", "r")
     last_url_crawled = f.readline()
