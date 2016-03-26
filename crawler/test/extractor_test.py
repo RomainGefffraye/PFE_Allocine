@@ -47,9 +47,10 @@ class Movie:
 
     def get_production_year(self, movie_html):
         technical_info = movie_html.findAll("div", { "class" : "item"})
-        production_year = filter((lambda x: x.find("span", { "class" : "what light"}).text == "Année de production".decode('UTF-8')), technical_info)
+        production_year_tag = filter((lambda x: x.find("span", { "class" : "what light"}).text == "Année de production".decode('UTF-8')), technical_info)
+        production_year = production_year_tag[0].find("span", {"class" : "that"}).text.strip()
         if production_year:
-            return int(production_year[0].find("span", {"class" : "that"}).text.strip())
+            return int(production_year)
         else:
             return None
 
@@ -342,6 +343,25 @@ class Extractor_test(unittest.TestCase):
         self.assertEqual(movie.summary.split()[0].encode("utf-8"), "Durant")
         self.assertEqual(movie.url, url)
         self.assertEqual(movie.language.encode('utf-8'), "Français")
+
+    def test_eternal(self):
+        page = open("data/test_eternal.html", 'r').read()
+        url = "http://www.allocine.fr/film/fichefilm_gen_cfilm=186635.html"
+        page_content = BeautifulSoup(page, 'html.parser')
+        movie = Movie(page_content, url)
+        self.assertEqual(movie.original_movie_title, None)
+        self.assertEqual(movie.critic_rate, None)
+        self.assertEqual(movie.movie_title.encode("utf-8"), "Eternal")
+        self.assertEqual(movie.spectator_rate, None)
+        self.assertEqual(movie.genres, ["Drame", "Fantastique"])
+        self.assertEqual(movie.actors, None)
+        self.assertEqual(movie.realisator, ["Paul Verhoeven"])
+        self.assertEqual(movie.production_year, None)
+        self.assertEqual(movie.distributor.encode("utf-8"), '-')
+        self.assertEqual(movie.budget, '-')
+        self.assertEqual(movie.summary.split()[0].encode("utf-8"), "Alors")
+        self.assertEqual(movie.url, url)
+        self.assertEqual(movie.language.encode('utf-8'), "Anglais")
 
 
 if __name__ == '__main__':
