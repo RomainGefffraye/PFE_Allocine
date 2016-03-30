@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-import os
+import os, io
 import json
 import requests
 import re
 import urlparse
 import shutil
 import time
+import random
 
 class Movie:
     def to_json(self, data):
@@ -153,29 +154,41 @@ class Movie:
         print "Note presse: ", self.critic_rate
         print "Lien: ", self.url
 
-        
+def get_last_part_number(movies_category):
+    category_file = sorted(os.listdir(os.getcwd()+"/data/movies_json"))
+    movies_with_part = [file_name for file_name in category_file if any(c.isdigit() for c in file_name)]
+    movies_categorty_with_part = [file_name for file_name in movies_with_part if movies_category in file_name]
+    last_part = 0
+    for file_name in movies_categorty_with_part:
+        part = int(filter(str.isdigit, file_name))
+        if part > last_part:
+            last_part = part
+    return last_part
+
+
 def crawl_from_save(movies_category):
-    f = open("urls/progress/last_crawled", "r")
+    f = open("progress/last_crawled", "r")
     last_url_crawled = f.readline()
     f.close()
     data_json = {}
     with open("urls/movies/" + movies_category) as movies_url:
         for movie in movies_url:
-            while last_url_crawled.split() != movie.split():
-                pass
+            if movie.strip() == last_url_crawled.strip():
+                break
         line_number = 0
-        part_number = 0
+        part_number = get_last_part_number(movies_category)
+        print part_number
         for movie in movies_url:
             line_number += 1
-            if line_number % 5000 == 0:
+            if line_number % 4000 == 0:
                 part_number += 1
-                with open("data/movies_json/" + movies_category + "_" + part_number + ".json", 'w+') as data:
+                with open("data/movies_json/" + movies_category + "_" + str(part_number) + ".json", 'w+') as data:
                     json.dump(data_json, data)
-                with open("urls/progress/last_crawled", 'w+') as save:
-                    write(movie, save)
+                with open("progress/last_crawled", 'w+') as save:
+                    save.write(movie)
                 data_json = {}
             print movie[:-1]
-            page = requests.get(movie, headers=headers)
+            page = requests.get(movie, headers=random.choice(list_headers))
             if page.status_code == 200:
                 page_content = BeautifulSoup(page.content, 'html.parser')
                 movie_crawled = Movie(page_content, movie[:-1])
@@ -193,15 +206,15 @@ def crawl(movies_category):
         part_number = 0
         for movie in movies_url:
             line_number += 1
-            if line_number % 5000 == 0:
+            if line_number % 4000 == 0:
                 part_number += 1
-                with open("data/movies_json/" + movies_category + "_" + part_number + ".json", 'w+') as data:
+                with open("data/movies_json/" + movies_category + "_" + str(part_number) + ".json", 'w+') as data:
                     json.dump(data_json, data)
-                with open("urls/progress/last_crawled", 'w+') as save:
-                    write(movie, save)
+                with open("progress/last_crawled", 'w+') as save:
+                    save.write(movie)
                 data_json = {}
             print movie[:-1]
-            page = requests.get(movie, headers=headers)
+            page = requests.get(movie, headers=random.choice(list_headers))
             if page.status_code == 200:
                 page_content = BeautifulSoup(page.content, 'html.parser')
                 movie_crawled = Movie(page_content, movie[:-1])
@@ -216,10 +229,39 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1'
 }
 
+list_headers = [{
+    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1'
+}, {'User-Agent': 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.7.6) Gecko/20050512 Firefox'
+}, {'User-Agent': 'Mozilla/5.0 (Macintosh; U; PPC Mac OS X Mach-O; en-US; rv:1.7.12) Gecko/20050915 Firefox/1.0.7'
+}, {'User-Agent': 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/525.13 (KHTML, like Gecko) Chrome/0.2.149.27 Safari/525.13'
+}, {'User-Agent': 'Mozilla/5.0 (X11; U; Linux x86_64; en-US) AppleWebKit/532.0 (KHTML, like Gecko) Chrome/4.0.202.0 Safari/532.0'
+}, {'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:34.0) Gecko/20100101 Firefox/34.0'
+}, {'User-Agent': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)'}]
+
 category_file = sorted(os.listdir(os.getcwd()+"/data/movies_url"))
 for movies_category in category_file:
-    if os.path.exists(os.getcwd()+"/urls/progress/last_crawled"):
+    get_last_part_number(movies_category)
+    if os.path.exists(os.getcwd()+"/progress/last_crawled"):
         crawl_from_save(movies_category)
     else:
         crawl(movies_category)
-    os.remove(os.getcwd() + "/urls/progress/last_crawled")
+    if os.path.exists(os.getcwd()+"/progress/last_crawled"):
+        os.remove(os.getcwd() + "/progress/last_crawled")
+
+category_file = sorted(os.listdir(os.getcwd()+"/data/movies_json"))
+movies_category = [file_name for file_name in category_file if not any(c.isdigit() for c in file_name)]
+for category in movies_category:
+    if category.endswith('.json'):
+        category = category[:-5]
+    if category.endswith('die'):
+        movies_with_part = [file_name for file_name in category_file if (len(file_name) < 28 and category in file_name)]
+    else:
+        movies_with_part = [file_name for file_name in category_file if category in file_name]
+    if len(movies_with_part) > 1:
+        all_movies = {}
+        for movies_part in movies_with_part:
+            with open('data/movies_json/' + movies_part) as part:
+                all_movies = json.load(part)
+        with io.open("data/movies_json/" + movies_with_part[0][:-5] + "_all_part.json" , "w+", encoding='utf8') as all_part:
+            output = json.dumps(all_movies, ensure_ascii=False, encoding='utf8')
+            all_part.write(unicode(output))
