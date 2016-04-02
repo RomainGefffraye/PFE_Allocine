@@ -12,6 +12,7 @@ with open('d3_visualisation/data/sunburst.json', 'w') as fp:
     json.dump(get_movies_per_productor(data, list_of_parameters), fp)
 
 distributors = get_set_of_distributors(data)
+null_value = get_null_percentage(data)
 movies_year_distributors = get_movies_per_years_per_distributors(distributors, data)
 generate_data_d3("movies_per_years_per_distributor.js", "movies_per_years_per_distributor", movies_year_distributors)
 genres_and_actors_number = get_count_genres_and_actors(data)
@@ -27,3 +28,4 @@ realisators_number_formated = get_data_formated_genre_bar(realisators_number, 43
 generate_data_d3("realisators_bar_chart.js", "realisators_number", [realisators_number_formated])
 production_years_number_formated = get_data_formated_genre_bar(production_years_number, 700)
 generate_data_d3("production_year_bar_chart.js", "production_years_number", [production_years_number_formated])
+generate_data_d3("null_value.js", "null_value", null_value)

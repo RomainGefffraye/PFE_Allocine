@@ -1,24 +1,62 @@
-span {
-  color: #39739d;
-  font-size: 12px;
-  white-space: nowrap;
-  background: #E1ECF4;
-  border: 1px solid #E1ECF4;
-  display: inline-block;
+body{
+  background-color: rgb(245, 245, 245);
 }
 
-text {
-    font: 12px sans-serif;
+#sidebar {
+  position: relative;
+  margin: 0 10px 10px 10px;
+  width: 15%;
+  height: 100%;
+  background: #CFD4D2;
+  float: left;
+  border-radius: 10px;
 }
-svg {
+
+#content{
+  margin-left: 17%;
+}
+
+.graphTitle{
+  margin: auto;
+  margin-bottom: 20px;
+  width: 70%;
+  height: 30px;
+  text-align: center;
+  background-color: #CFD4D2;
+  border-radius: 5px;
+}
+
+#titleSideBar{
+  text-align: center;
+  color: #417DC1;
+}
+
+.chartTitle{
+  color: #417DC1;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    background-color: #CFD4D2;
+}
+
+li a {
     display: block;
+    color: #000;
+    padding: 8px 0 8px 16px;
+    text-decoration: none;
+    border-top: 0.5px solid rgb(245, 245, 245);
+    border-bottom: 0.5px solid rgb(245, 245, 245);
 }
-html, body, #chart1, svg {
-    margin: 0px;
-    padding: 0px;
-    height: 100%;
-    width: 100%;
+
+li a.active {
+    background-color: #4CAF50;
+    color: white;
 }
-.dashed {
-    stroke-dasharray: 5,5;
+
+li a:hover:not(.active) {
+    background-color: #555;
+    color: white;
 }

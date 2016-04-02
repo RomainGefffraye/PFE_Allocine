@@ -1,0 +1,1 @@
+var null_value = {"production_year": 2.1688513280441533, "spectator_rate": 55.98769690697942, "language": 16.492756122800966, "original_movie_title": 67.62964240542716, "critic_rate": 85.44038174083018, "budget": 90.00086236633322, "realisator": 5.661434977578475, "actors": 16.52437622168564, "distributor": 81.09405542140968, "summary": 23.5009198574221}

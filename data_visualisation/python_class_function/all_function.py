@@ -163,6 +163,17 @@ def get_movie_distribution_distributor_year(data):
             movie_distribution[genre][distributor][year] += 1
     return movie_distribution
 
+def get_null_percentage(data):
+    null_value = defaultdict(float)
+    for movie in data:
+        for attribute in data[movie]:
+            if data[movie][attribute] == None:
+                null_value[attribute] += 1
+    number_of_movie = len(data)
+    for attribute in null_value:
+        null_value[attribute] = null_value[attribute] / number_of_movie * 100
+    return null_value
+
 def get_movies_per_productor(data, list_of_parameter):
     children = []
     movie = {"name": "movie", "children": children}

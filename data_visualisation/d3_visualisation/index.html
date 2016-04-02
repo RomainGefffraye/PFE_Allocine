@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
   <head>
       <meta charset="utf-8">
@@ -8,14 +7,38 @@
       <script src="d3/nv.d3.js"></script>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
       <script src="data/movies_per_years_per_distributor.js"></script>
+
   </head>
   <body>
-    <div id="dataSelection">
-      <select id="dropdown"></select>
-      <button id="addData">Ajouter</select>
+    <div id="title">
+      <h2 class="graphTitle">Pourcentage de valeurs nulles dans les catégories</h2>
     </div>
-    <div id="dataInChart"></div>
-    <div id="chart1"></div>
-    <script src="script/chart_movies_and_distributors.js"></script>
+    <div style ="overflow: hidden;">
+      <div id="sideBar">
+        <div id="links">
+          <h3 id="titleSideBar">Consultez</h3>
+          <ul>
+              <li>
+                <a href="null_value.html">Résumé des données</a>
+              </li>
+              <li>
+                <a class="active" href="#">Distributeurs</a>
+              </li>
+              <li>
+                <a href="realisator_distribution.html">Réalisateurs</a>
+              </li>
+          </ul>
+        </div>
+      </div>
+      <div id="content">
+        <div id="dataSelection">
+          <select id="dropdown"></select>
+          <button id="addData">Ajouter</select>
+        </div>
+        <div id="dataInChart"></div>
+        <div id="chart"></div>
+        <script src="script/chart_movies_and_distributors.js"></script>
+      </div>
+    </div>
   </body>
 </html>

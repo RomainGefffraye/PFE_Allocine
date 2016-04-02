@@ -27,7 +27,7 @@ function pushData(listOfCompany){
     companies.push(this.value);
   })
   var data = getData(companies);
-  d3.select('#chart1')
+  d3.select('#chart')
     .datum(data)
     .call(chart);
 }
@@ -47,7 +47,7 @@ nv.addGraph(function() {
           .axisLabel("Année");
         chart.yAxis
           .axisLabel('Quantité (Unité)');
-        d3.select('#chart1').append('svg')
+        d3.select('#chart').append('svg')
             .datum(data)
             .call(chart);
         nv.utils.windowResize(chart.update);
@@ -59,7 +59,7 @@ $('#dropdown').change(function () {
   var $selected = $(this).find(":selected")[0];
   if ($selected) {
     data = getData([$selected.text]);
-      d3.select('#chart1')
+      d3.select('#chart')
         .datum(data)
         .call(chart);
   }

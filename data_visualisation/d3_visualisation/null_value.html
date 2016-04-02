@@ -1,0 +1,85 @@
+<html>
+  <head>
+      <meta charset="utf-8">
+      <link href="d3/nv.d3.css" rel="stylesheet" type="text/css">
+      <link href="style/style.css" rel="stylesheet" type="text/css">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.min.js" charset="utf-8"></script>
+      <script src="d3/nv.d3.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+      <script src="data/null_value.js"></script>
+  </head>
+  <body>
+    <div id="title">
+      <h2 class="graphTitle">Pourcentage de valeurs nulles dans les catégories</h2>
+    </div>
+    <div id="sideBar">
+      <div id="links">
+        <h3 id="titleSideBar">Consultez</h3>
+        <ul>
+            <li>
+              <a class="active" href="#">Résumé des données</a>
+            </li>
+            <li>
+              <a href="index.html">Distributeurs</a>
+            </li>
+            <li>
+              <a href="index.html">Réalisateurs</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+    <div id="content">
+      <table>
+        <tr>
+          <td align="center">
+            <h4 class="chartTitle">Année de production</h4>
+            <div id="chart" class="chartNull"></div>
+          </td>
+          <td align="center">
+            <h4 class="chartTitle">Note des spectateurs</h4>
+            <div id="chart2" class="chartNull"></div>
+          </td>
+          <td align="center">
+            <h4 class="chartTitle">Langue</h4>
+            <div id="chart3" class="chartNull"></div>
+          </td>
+          <td align="center">
+            <h4 class="chartTitle">Titre original</h4>
+            <div id="chart4" class="chartNull"></div>
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            <h4 class="chartTitle">Note de la presse</h4>
+            <div id="chart5" class="chartNull"></div>
+          </td>
+          <td align="center">
+            <h4 class="chartTitle">Budget</h4>
+            <div id="chart6" class="chartNull"></div>
+          </td>
+          <td align="center">
+            <h4 class="chartTitle">Réalisateur</h4>
+            <div id="chart7" class="chartNull"></div>
+          </td>
+          <td align="center">
+            <h4 class="chartTitle">Acteurs</h4>
+            <div id="chart8" class="chartNull"></div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td align="center">
+            <h4 class="chartTitle">Distributeur</h4>
+            <div id="chart9" class="chartNull"></div>
+          </td>
+          <td align="center">
+            <h4 class="chartTitle">Résumé</h4>
+            <div id="chart10" class="chartNull"></div>
+          </td>
+          <td></td>
+        </tr>
+      </table>
+    </div>
+    <script src="script/null_value.js"></script>
+  </body>
+</html>
