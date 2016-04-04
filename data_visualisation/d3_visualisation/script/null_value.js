@@ -10,7 +10,7 @@ nv.addGraph(function() {
       .donut(true)
       .showLegend(false)
       .color(['#E62020', '#50C878'])
-      .donutRatio(0.35);
+      .donutRatio(0.50);
 
     d3.select("#chart").append('svg')
         .datum(getData("production_year"))
@@ -31,7 +31,7 @@ nv.addGraph(function() {
       .donut(true)
       .showLegend(false)
       .color(['#E62020', '#50C878'])
-      .donutRatio(0.35);
+      .donutRatio(0.50);
 
     d3.select("#chart2").append('svg')
         .datum(getData("spectator_rate"))
@@ -51,7 +51,7 @@ nv.addGraph(function() {
       .donut(true)
       .showLegend(false)
       .color(['#E62020', '#50C878'])
-      .donutRatio(0.35);
+      .donutRatio(0.50);
 
     d3.select("#chart3").append('svg')
         .datum(getData("language"))
@@ -71,7 +71,7 @@ nv.addGraph(function() {
       .donut(true)
       .showLegend(false)
       .color(['#E62020', '#50C878'])
-      .donutRatio(0.35);
+      .donutRatio(0.50);
 
     d3.select("#chart4").append('svg')
         .datum(getData("original_movie_title"))
@@ -91,7 +91,7 @@ nv.addGraph(function() {
       .donut(true)
       .showLegend(false)
       .color(['#E62020', '#50C878'])
-      .donutRatio(0.35);
+      .donutRatio(0.50);
 
     d3.select("#chart5").append('svg')
         .datum(getData("critic_rate"))
@@ -111,7 +111,7 @@ nv.addGraph(function() {
       .donut(true)
       .showLegend(false)
       .color(['#E62020', '#50C878'])
-      .donutRatio(0.35);
+      .donutRatio(0.50);
 
     d3.select("#chart6").append('svg')
         .datum(getData("budget"))
@@ -131,7 +131,7 @@ nv.addGraph(function() {
       .donut(true)
       .showLegend(false)
       .color(['#E62020', '#50C878'])
-      .donutRatio(0.35);
+      .donutRatio(0.50);
 
     d3.select("#chart7").append('svg')
         .datum(getData("realisator"))
@@ -151,7 +151,7 @@ nv.addGraph(function() {
       .donut(true)
       .showLegend(false)
       .color(['#E62020', '#50C878'])
-      .donutRatio(0.35);
+      .donutRatio(0.50);
 
     d3.select("#chart8").append('svg')
         .datum(getData("actors"))
@@ -171,7 +171,7 @@ nv.addGraph(function() {
       .donut(true)
       .showLegend(false)
       .color(['#E62020', '#50C878'])
-      .donutRatio(0.35);
+      .donutRatio(0.50);
 
     d3.select("#chart9").append('svg')
         .datum(getData("distributor"))
@@ -191,7 +191,7 @@ nv.addGraph(function() {
       .donut(true)
       .showLegend(false)
       .color(['#E62020', '#50C878'])
-      .donutRatio(0.35);
+      .donutRatio(0.50);
 
     d3.select("#chart10").append('svg')
         .datum(getData("summary"))

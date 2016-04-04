@@ -10,7 +10,37 @@
 
   </head>
   <body>
-    <div id="chart"></div>
-    <script src="script/actor_distribution.js"></script>
+    <div id="title">
+      <h2 class="graphTitle">Données concernant les acteurs</h2>
+    </div>
+    <div id="sideBar">
+      <div id="links">
+        <h3 id="titleSideBar">Consultez</h3>
+        <ul>
+            <li>
+              <a href="null_value.html">Résumé des données</a>
+            </li>
+            <li>
+              <a href="movies_per_distributor_per_year.html">Distributeurs</a>
+            </li>
+            <li>
+              <a href="realisator_distribution.html">Réalisateurs</a>
+            </li>
+            <li>
+              <a href="genre_distribution.html">Genres</a>
+            </li>
+            <li>
+              <a href="production_year_distribution.html">Année de production</a>
+            </li>
+            <li>
+              <a class="active" href="actor_distribution.html">Acteurs</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+    <div id="content">
+      <div id="chart"></div>
+      <script src="script/actor_distribution.js"></script>
+    </div>
   </body>
 </html>
